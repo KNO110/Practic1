@@ -1,0 +1,47 @@
+using System;
+using System.IO;
+using System.Text;
+
+namespace FileStreamExample
+{
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("Введите путь --> ");
+            string path = Console.ReadLine();
+
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+
+            Console.WriteLine("Введите название категории товара:");
+            string category = Console.ReadLine();
+
+            Console.WriteLine("Введите название товара(ну пж):");
+            string productName = Console.ReadLine();
+
+            Console.WriteLine("Введите количество товара на складе(надеюсь хоть 1 есть):");
+            int quantity = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Введите цену за единицу товара(даром не берём):");
+            double price = double.Parse(Console.ReadLine());
+
+            string productInfo = $"{category}\n{productName}\n{quantity}\n{price}";
+
+            byte[] writeBytes = Encoding.UTF8.GetBytes(productInfo);
+
+            fs.Write(writeBytes, 0, writeBytes.Length);
+
+            fs.Flush();
+
+            fs.Seek(0, SeekOrigin.Begin);
+
+            byte[] readBytes = new byte[fs.Length];
+            fs.Read(readBytes, 0, readBytes.Length);
+            string readText = Encoding.UTF8.GetString(readBytes);
+
+            Console.WriteLine("Данные прочитанные из файла --> \n{0}", readText);
+
+            fs.Close();
+        }
+    }
+}
